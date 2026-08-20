@@ -1,0 +1,1 @@
+{"type":"google_compute_firewall_policy_iam_policy","displayName":"Firewall Policy IAM Policy","category":"network","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"name","label":"Name","type":"string","required":true},{"key":"policy_data","label":"Policy Data","type":"string","required":true}],"slots":[]}

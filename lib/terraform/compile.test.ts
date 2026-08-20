@@ -191,11 +191,11 @@ describe("compileGraph validation", () => {
   });
 });
 
-describe("compileGraph with build overrides", () => {
+describe("compileGraph with nested blocks", () => {
   it("nests firewall protocol and ports inside an allow block", () => {
     const firewall = node("n3", "google_compute_firewall", "allow_ssh", {
       name: "allow-ssh",
-      ports: ["22"],
+      allow: [{ ports: ["22"] }],
       source_ranges: ["0.0.0.0/0"],
     });
     const output = serializeHcl(
@@ -204,16 +204,18 @@ describe("compileGraph with build overrides", () => {
 
     expect(output).toContain(`resource "google_compute_firewall" "allow_ssh" {`);
     expect(output).toMatch(/network\s+= google_compute_network\.main\.id/);
-    expect(output).toContain("  allow {\n    protocol = \"tcp\"\n    ports    = [\"22\"]\n  }");
+    expect(output).toContain(`  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }`);
     // protocol and ports must not also appear as top-level attributes.
     expect(output).not.toMatch(/^\s{2}protocol\s+=/m);
   });
 
-  it("omits ports for icmp, which the GCP provider rejects", () => {
+  it("takes nested values from the repeated block they belong to", () => {
     const firewall = node("n3", "google_compute_firewall", "allow_ping", {
       name: "allow-ping",
-      protocol: "icmp",
-      ports: ["22"],
+      allow: [{ protocol: "icmp" }],
     });
     const output = serializeHcl(
       expectOk(compileGraph(input([vpc, firewall], [edge("e1", "n1", "n3", "network")]))),
@@ -221,6 +223,17 @@ describe("compileGraph with build overrides", () => {
 
     expect(output).toContain('protocol = "icmp"');
     expect(output).not.toContain("ports");
+  });
+
+  it("emits a required block from its defaults even when the user set nothing", () => {
+    const firewall = node("n3", "google_compute_firewall", "bare", { name: "bare" });
+    const output = serializeHcl(
+      expectOk(compileGraph(input([vpc, firewall], [edge("e1", "n1", "n3", "network")]))),
+    );
+
+    expect(output).toContain(`  allow {
+    protocol = "tcp"
+  }`);
   });
 
   it("builds the nested blocks of a VM instance", () => {
@@ -233,19 +246,20 @@ describe("compileGraph with build overrides", () => {
       ),
     );
 
-    expect(output).toContain("boot_disk {\n    initialize_params {");
+    expect(output).toContain(`boot_disk {
+    initialize_params {`);
     expect(output).toContain('image = "debian-cloud/debian-12"');
     expect(output).toContain("subnetwork = google_compute_subnetwork.web.id");
-    // No service account connected, so that block is left out entirely.
+    // Optional blocks stay out until something puts content in them, so a VM with no service
+    // account connected does not grow one just because `scopes` has a default.
     expect(output).not.toContain("service_account {");
-    // access_config appears only when a public IP was requested.
     expect(output).not.toContain("access_config");
   });
 
-  it("adds an access_config block when a public IP is requested", () => {
+  it("emits an access_config block when the user adds one", () => {
     const instance = node("n3", "google_compute_instance", "web", {
       name: "web",
-      assign_public_ip: true,
+      network_interface: [{ access_config: [{}] }],
     });
     const output = serializeHcl(
       expectOk(
@@ -256,7 +270,8 @@ describe("compileGraph with build overrides", () => {
     );
 
     expect(output).toContain("access_config {}");
-    expect(output).not.toMatch(/^\s{2}assign_public_ip/m);
+    // The slot still lands inside the interface the user created.
+    expect(output).toContain("subnetwork = google_compute_subnetwork.web.id");
   });
 
   it("wires a service account into the instance when connected", () => {
@@ -270,13 +285,15 @@ describe("compileGraph with build overrides", () => {
             [
               linkSubnetToVpc,
               edge("e2", "n2", "n3", "subnetwork"),
-              edge("e3", "n4", "n3", "service_account"),
+              // The slot id is the attribute it writes, which inside service_account is email.
+              edge("e3", "n4", "n3", "email"),
             ],
           ),
         ),
       ),
     );
 
+    expect(output).toContain("service_account {");
     expect(output).toContain("email  = google_service_account.runner.email");
     expect(output).toContain('scopes = ["cloud-platform"]');
   });

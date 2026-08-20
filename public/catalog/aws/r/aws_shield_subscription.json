@@ -1,0 +1,1 @@
+{"type":"aws_shield_subscription","displayName":"Subscription","category":"project","description":"","fields":[{"key":"auto_renew","label":"Auto Renew","type":"string","required":false,"help":"Whether to automatically renew the subscription when it expires."},{"key":"skip_destroy","label":"Skip Destroy","type":"bool","required":false}],"slots":[]}

@@ -1,0 +1,1 @@
+{"type":"aws_organizations_delegated_administrator","displayName":"Delegated Administrator","category":"project","description":"","fields":[{"key":"account_id","label":"Account ID","type":"string","required":true},{"key":"id","label":"ID","type":"string","required":false},{"key":"service_principal","label":"Service Principal","type":"string","required":true}],"slots":[]}

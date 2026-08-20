@@ -1,0 +1,1 @@
+{"type":"aws_iam_group_policies_exclusive","displayName":"Group Policies Exclusive","category":"iam","description":"","fields":[{"key":"group_name","label":"Group Name","type":"string","required":true},{"key":"policy_names","label":"Policy Names","type":"stringList","required":true}],"slots":[]}

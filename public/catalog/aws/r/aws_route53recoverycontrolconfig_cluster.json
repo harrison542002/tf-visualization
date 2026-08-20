@@ -1,0 +1,1 @@
+{"type":"aws_route53recoverycontrolconfig_cluster","displayName":"Cluster","category":"network","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"name","label":"Name","type":"string","required":true},{"key":"network_type","label":"Network Type","type":"string","required":false}],"slots":[]}

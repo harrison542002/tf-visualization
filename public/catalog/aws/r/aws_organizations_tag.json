@@ -1,0 +1,1 @@
+{"type":"aws_organizations_tag","displayName":"Tag","category":"project","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"key","label":"Key","type":"string","required":true},{"key":"resource_id","label":"Resource ID","type":"string","required":true},{"key":"value","label":"Value","type":"string","required":true}],"slots":[]}

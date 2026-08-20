@@ -17,8 +17,8 @@ const reset = () =>
 const store = () => useGraphStore.getState();
 
 /** Adds a resource and returns the node that was created. */
-function addResource(type: string) {
-  store().addResource(type, { x: 0, y: 0 });
+async function addResource(type: string) {
+  await store().addResource(type, { x: 0, y: 0 });
   const nodes = store().nodes;
   const node = nodes[nodes.length - 1];
   if (!node) throw new Error(`addResource did not create a node for ${type}`);
@@ -31,28 +31,28 @@ beforeEach(() => {
 });
 
 describe("addResource", () => {
-  it("names nodes uniquely within a resource type", () => {
-    const first = addResource("google_compute_network");
-    const second = addResource("google_compute_network");
+  it("names nodes uniquely within a resource type", async () => {
+    const first = await addResource("google_compute_network");
+    const second = await addResource("google_compute_network");
 
     expect(first.data.localName).toBe("vpc_network");
     expect(second.data.localName).toBe("vpc_network_2");
   });
 
-  it("seeds fields from the schema defaults", () => {
-    const node = addResource("google_compute_network");
+  it("seeds fields from the schema defaults", async () => {
+    const node = await addResource("google_compute_network");
     expect(node.data.fields["auto_create_subnetworks"]).toBe(false);
   });
 
-  it("selects the new node", () => {
-    const node = addResource("google_storage_bucket");
+  it("selects the new node", async () => {
+    const node = await addResource("google_storage_bucket");
     expect(store().selectedNodeId).toBe(node.id);
   });
 });
 
 describe("duplicateNode", () => {
-  it("copies fields but gives the copy its own name and id", () => {
-    const original = addResource("google_storage_bucket");
+  it("copies fields but gives the copy its own name and id", async () => {
+    const original = await addResource("google_storage_bucket");
     store().setNodeField(original.id, "name", "assets");
     store().duplicateNode(original.id);
 
@@ -63,9 +63,9 @@ describe("duplicateNode", () => {
     expect(second?.data.localName).not.toBe(first?.data.localName);
   });
 
-  it("does not carry over connections", () => {
-    const vpc = addResource("google_compute_network");
-    const subnet = addResource("google_compute_subnetwork");
+  it("does not carry over connections", async () => {
+    const vpc = await addResource("google_compute_network");
+    const subnet = await addResource("google_compute_subnetwork");
     store().onConnect({
       source: vpc.id,
       target: subnet.id,
@@ -78,16 +78,16 @@ describe("duplicateNode", () => {
     expect(store().edges).toHaveLength(1);
   });
 
-  it("ignores an unknown node", () => {
+  it("ignores an unknown node", async () => {
     store().duplicateNode("nope");
     expect(store().nodes).toHaveLength(0);
   });
 });
 
 describe("removeNode", () => {
-  it("removes the edges attached to it", () => {
-    const vpc = addResource("google_compute_network");
-    const subnet = addResource("google_compute_subnetwork");
+  it("removes the edges attached to it", async () => {
+    const vpc = await addResource("google_compute_network");
+    const subnet = await addResource("google_compute_subnetwork");
     store().onConnect({
       source: vpc.id,
       target: subnet.id,
@@ -101,17 +101,17 @@ describe("removeNode", () => {
     expect(store().edges).toHaveLength(0);
   });
 
-  it("clears the selection when the selected node goes", () => {
-    const node = addResource("google_compute_network");
+  it("clears the selection when the selected node goes", async () => {
+    const node = await addResource("google_compute_network");
     store().removeNode(node.id);
     expect(store().selectedNodeId).toBeNull();
   });
 });
 
 describe("onConnect", () => {
-  it("rejects a connection the schema does not allow", () => {
-    const bucket = addResource("google_storage_bucket");
-    const subnet = addResource("google_compute_subnetwork");
+  it("rejects a connection the schema does not allow", async () => {
+    const bucket = await addResource("google_storage_bucket");
+    const subnet = await addResource("google_compute_subnetwork");
 
     store().onConnect({
       source: bucket.id,
@@ -125,13 +125,13 @@ describe("onConnect", () => {
 });
 
 describe("undo and redo", () => {
-  it("starts with nothing to undo", () => {
+  it("starts with nothing to undo", async () => {
     expect(store().past).toHaveLength(0);
     expect(store().future).toHaveLength(0);
   });
 
-  it("undoes adding a node, and redoes it", () => {
-    addResource("google_compute_network");
+  it("undoes adding a node, and redoes it", async () => {
+    await addResource("google_compute_network");
     expect(store().nodes).toHaveLength(1);
 
     store().undo();
@@ -141,14 +141,14 @@ describe("undo and redo", () => {
     expect(store().nodes).toHaveLength(1);
   });
 
-  it("does nothing when there is no history", () => {
+  it("does nothing when there is no history", async () => {
     store().undo();
     store().redo();
     expect(store().nodes).toHaveLength(0);
   });
 
-  it("collapses a run of edits to one field into a single step", () => {
-    const node = addResource("google_storage_bucket");
+  it("collapses a run of edits to one field into a single step", async () => {
+    const node = await addResource("google_storage_bucket");
     const before = store().past.length;
 
     store().setNodeField(node.id, "name", "a");
@@ -163,8 +163,8 @@ describe("undo and redo", () => {
     expect(store().nodes[0]?.data.fields["name"]).toBeUndefined();
   });
 
-  it("starts a new step when the edit moves to another field", () => {
-    const node = addResource("google_storage_bucket");
+  it("starts a new step when the edit moves to another field", async () => {
+    const node = await addResource("google_storage_bucket");
     const before = store().past.length;
 
     store().setNodeField(node.id, "name", "assets");
@@ -177,9 +177,9 @@ describe("undo and redo", () => {
     expect(store().nodes[0]?.data.fields["name"]).toBe("assets");
   });
 
-  it("restores connections", () => {
-    const vpc = addResource("google_compute_network");
-    const subnet = addResource("google_compute_subnetwork");
+  it("restores connections", async () => {
+    const vpc = await addResource("google_compute_network");
+    const subnet = await addResource("google_compute_subnetwork");
     store().onConnect({
       source: vpc.id,
       target: subnet.id,
@@ -194,18 +194,18 @@ describe("undo and redo", () => {
     expect(store().edges).toHaveLength(1);
   });
 
-  it("drops the redo stack once a new change is made", () => {
-    addResource("google_compute_network");
+  it("drops the redo stack once a new change is made", async () => {
+    await addResource("google_compute_network");
     store().undo();
     expect(store().future).toHaveLength(1);
 
-    addResource("google_storage_bucket");
+    await addResource("google_storage_bucket");
     expect(store().future).toHaveLength(0);
   });
 
-  it("undoes a clear", () => {
-    addResource("google_compute_network");
-    addResource("google_storage_bucket");
+  it("undoes a clear", async () => {
+    await addResource("google_compute_network");
+    await addResource("google_storage_bucket");
     store().clearGraph();
     expect(store().nodes).toHaveLength(0);
 
@@ -213,8 +213,8 @@ describe("undo and redo", () => {
     expect(store().nodes).toHaveLength(2);
   });
 
-  it("clears history when the provider changes", () => {
-    addResource("google_compute_network");
+  it("clears history when the provider changes", async () => {
+    await addResource("google_compute_network");
     expect(store().past.length).toBeGreaterThan(0);
 
     store().selectProvider("gcp");
@@ -222,8 +222,8 @@ describe("undo and redo", () => {
     expect(store().nodes).toHaveLength(0);
   });
 
-  it("does not leave the selection pointing at a node that no longer exists", () => {
-    const node = addResource("google_compute_network");
+  it("does not leave the selection pointing at a node that no longer exists", async () => {
+    const node = await addResource("google_compute_network");
     expect(store().selectedNodeId).toBe(node.id);
 
     store().undo();
@@ -232,9 +232,9 @@ describe("undo and redo", () => {
 });
 
 describe("autoLayout", () => {
-  it("moves dependants to the right of what they reference", () => {
-    const vpc = addResource("google_compute_network");
-    const subnet = addResource("google_compute_subnetwork");
+  it("moves dependants to the right of what they reference", async () => {
+    const vpc = await addResource("google_compute_network");
+    const subnet = await addResource("google_compute_subnetwork");
     store().onConnect({
       source: vpc.id,
       target: subnet.id,
@@ -248,8 +248,8 @@ describe("autoLayout", () => {
     expect(positioned.get(subnet.id)?.x).toBeGreaterThan(positioned.get(vpc.id)?.x ?? 0);
   });
 
-  it("is undoable", () => {
-    const node = addResource("google_compute_network");
+  it("is undoable", async () => {
+    const node = await addResource("google_compute_network");
     const original = { ...node.position };
 
     store().autoLayout();

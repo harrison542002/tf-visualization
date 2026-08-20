@@ -1,0 +1,1 @@
+{"type":"aws_ram_sharing_with_organization","displayName":"Sharing With Organization","category":"project","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false}],"slots":[]}

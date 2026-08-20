@@ -1,0 +1,1 @@
+{"type":"aws_notifications_channel_association","displayName":"Channel Association","category":"project","description":"","fields":[{"key":"arn","label":"Arn","type":"string","required":true},{"key":"notification_configuration_arn","label":"Notification Configuration Arn","type":"string","required":true}],"slots":[]}

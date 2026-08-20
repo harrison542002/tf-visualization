@@ -1,0 +1,1 @@
+{"type":"aws_ce_cost_allocation_tag","displayName":"Cost Allocation Tag","category":"project","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"status","label":"Status","type":"string","required":true},{"key":"tag_key","label":"Tag Key","type":"string","required":true}],"slots":[]}

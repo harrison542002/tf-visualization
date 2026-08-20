@@ -1,0 +1,1 @@
+{"type":"google_billing_account_iam_policy","displayName":"Account IAM Policy","category":"iam","description":"","fields":[{"key":"billing_account_id","label":"Billing Account ID","type":"string","required":true},{"key":"id","label":"ID","type":"string","required":false},{"key":"policy_data","label":"Policy Data","type":"string","required":true}],"slots":[]}

@@ -1,0 +1,1 @@
+{"type":"aws_iam_saml_provider","displayName":"Saml Provider","category":"iam","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"name","label":"Name","type":"string","required":true},{"key":"saml_metadata_document","label":"Saml Metadata Document","type":"string","required":true}],"slots":[]}

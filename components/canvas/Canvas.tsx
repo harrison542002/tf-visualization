@@ -8,6 +8,7 @@ import {
   useReactFlow,
   type Edge,
   type NodeTypes,
+  type XYPosition,
 } from "@xyflow/react";
 import { useCallback, useMemo, useState, type DragEvent, type MouseEvent } from "react";
 
@@ -16,6 +17,7 @@ import { useThemeStore } from "@/lib/theme/store";
 import { ContextMenu, type ContextMenuItem } from "./ContextMenu";
 import { RESOURCE_DRAG_TYPE } from "./Palette";
 import { ResourceNode as ResourceNodeComponent } from "./ResourceNode";
+import { ResourceSearch } from "./ResourceSearch";
 import { useExportPng } from "./useExportPng";
 
 import "@xyflow/react/dist/style.css";
@@ -54,6 +56,8 @@ export function Canvas() {
   const { screenToFlowPosition, fitView } = useReactFlow();
   const { exportPng } = useExportPng();
   const [menu, setMenu] = useState<MenuState | null>(null);
+  /** Flow coordinates the search should drop its result at, or null when it is closed. */
+  const [searchAt, setSearchAt] = useState<XYPosition | null>(null);
 
   const onDragOver = useCallback((event: DragEvent) => {
     event.preventDefault();
@@ -67,7 +71,11 @@ export function Canvas() {
       if (!resourceType) return;
 
       // Drop coordinates are in screen space; the canvas may be panned or zoomed.
-      addResource(resourceType, screenToFlowPosition({ x: event.clientX, y: event.clientY }));
+      // The node appears once its schema has loaded; the palette shows progress meanwhile.
+      void addResource(
+        resourceType,
+        screenToFlowPosition({ x: event.clientX, y: event.clientY }),
+      );
     },
     [addResource, screenToFlowPosition],
   );
@@ -96,9 +104,17 @@ export function Canvas() {
           { label: "Delete connection", onSelect: () => removeEdge(edgeId), destructive: true },
         ];
       }
-      case "pane":
+      case "pane": {
+        // Captured now: the menu closes on select, and with it the click position.
+        const at = screenToFlowPosition({ x: menu.x, y: menu.y });
         return [
-          { label: "Tidy layout", onSelect: autoLayout, disabled: nodes.length === 0 },
+          { label: "Add resource…", onSelect: () => setSearchAt(at) },
+          {
+            label: "Tidy layout",
+            onSelect: autoLayout,
+            separated: true,
+            disabled: nodes.length === 0,
+          },
           { label: "Fit to view", onSelect: () => void fitView({ duration: 200 }) },
           { label: "Export as PNG", onSelect: exportPng, disabled: nodes.length === 0 },
           {
@@ -109,6 +125,7 @@ export function Canvas() {
             disabled: nodes.length === 0,
           },
         ];
+      }
     }
   }, [
     menu,
@@ -119,6 +136,7 @@ export function Canvas() {
     fitView,
     exportPng,
     clearGraph,
+    screenToFlowPosition,
     nodes.length,
   ]);
 
@@ -164,6 +182,13 @@ export function Canvas() {
       </ReactFlow>
 
       {menu && <ContextMenu x={menu.x} y={menu.y} items={menuItems} onClose={closeMenu} />}
+
+      {searchAt && (
+        <ResourceSearch
+          onSelect={(resourceType) => void addResource(resourceType, searchAt)}
+          onClose={() => setSearchAt(null)}
+        />
+      )}
     </div>
   );
 }

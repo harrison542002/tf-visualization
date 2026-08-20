@@ -1,0 +1,1 @@
+{"type":"aws_s3_bucket","displayName":"S3 Bucket","category":"storage","description":"Object storage bucket.","fields":[{"key":"bucket","label":"Bucket","type":"string","required":true,"help":"Globally unique.","placeholder":"my-app-assets"},{"key":"force_destroy","label":"Force Destroy","type":"bool","required":false,"defaultValue":false}],"slots":[]}

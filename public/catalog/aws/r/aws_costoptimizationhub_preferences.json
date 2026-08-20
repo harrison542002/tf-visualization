@@ -1,0 +1,1 @@
+{"type":"aws_costoptimizationhub_preferences","displayName":"Preferences","category":"project","description":"","fields":[{"key":"member_account_discount_visibility","label":"Member Account Discount Visibility","type":"string","required":false},{"key":"savings_estimation_mode","label":"Savings Estimation Mode","type":"string","required":false}],"slots":[]}

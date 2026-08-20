@@ -1,9 +1,13 @@
 import type { ProviderDefinition } from "../types";
-import { computeResources } from "./compute";
-import { networkResources } from "./network";
-import { projectResources } from "./project";
-import { storageResources } from "./storage";
+import { gcpCatalogSize, gcpGeneratedResources } from "./generated";
 
+/**
+ * Google Cloud.
+ *
+ * Resources come from `npm run codegen -- --provider gcp --tier1`, which converts the provider
+ * schema and applies the curated overrides in `codegen/overrides/gcp.ts`. Nothing here is
+ * hand-written except the provider-level settings below.
+ */
 export const gcpProvider: ProviderDefinition = {
   id: "gcp",
   displayName: "Google Cloud",
@@ -33,10 +37,6 @@ export const gcpProvider: ProviderDefinition = {
       defaultValue: "us-central1-a",
     },
   ],
-  resources: [
-    ...networkResources,
-    ...computeResources,
-    ...storageResources,
-    ...projectResources,
-  ],
+  resources: gcpGeneratedResources,
+  catalogSize: gcpCatalogSize,
 };

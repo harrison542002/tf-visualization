@@ -1,0 +1,1 @@
+{"type":"aws_securityhub_account_v2","displayName":"Account V2","category":"project","description":"","fields":[{"key":"region","label":"Region","type":"string","required":false,"help":"Region where this resource will be [managed](https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints)."}],"slots":[]}

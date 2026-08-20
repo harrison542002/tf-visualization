@@ -1,0 +1,1 @@
+{"type":"aws_bedrock_use_case_for_model_access","displayName":"Use Case For Model Access","category":"project","description":"","fields":[{"key":"form_data","label":"Form Data","type":"string","required":true}],"slots":[]}

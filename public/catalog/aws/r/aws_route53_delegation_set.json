@@ -1,0 +1,1 @@
+{"type":"aws_route53_delegation_set","displayName":"Delegation Set","category":"network","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"reference_name","label":"Reference Name","type":"string","required":false}],"slots":[]}

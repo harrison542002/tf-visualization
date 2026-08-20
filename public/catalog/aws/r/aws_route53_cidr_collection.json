@@ -1,0 +1,1 @@
+{"type":"aws_route53_cidr_collection","displayName":"Cidr Collection","category":"network","description":"","fields":[{"key":"name","label":"Name","type":"string","required":true}],"slots":[]}

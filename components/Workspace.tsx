@@ -10,28 +10,20 @@ import { GenerateDialog } from "@/components/generate/GenerateDialog";
 import { PropertiesPanel } from "@/components/panel/PropertiesPanel";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { ProviderStep } from "@/components/wizard/ProviderStep";
+import { ProviderSwitcher } from "@/components/wizard/ProviderSwitcher";
 import { useGraphStore } from "@/lib/graph/store";
-import { getProvider } from "@/lib/providers/registry";
 
-/** True when a keystroke belongs to whatever the user is typing in rather than to the canvas. */
 function isEditingText(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
   if (target.isContentEditable) return true;
   return ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
 }
 
-/**
- * Hosts the two steps of the flow: provider selection, then the canvas.
- *
- * The step is derived from whether a provider has been chosen rather than tracked separately,
- * so the two can never disagree.
- */
 export function Workspace() {
   const providerId = useGraphStore((state) => state.providerId);
 
   if (!providerId) return <ProviderStep />;
 
-  // The editor lives inside the provider because the PNG export needs React Flow's hooks.
   return (
     <ReactFlowProvider>
       <Editor />
@@ -41,7 +33,6 @@ export function Workspace() {
 
 function Editor() {
   const providerId = useGraphStore((state) => state.providerId);
-  const clearProvider = useGraphStore((state) => state.clearProvider);
   const nodeCount = useGraphStore((state) => state.nodes.length);
   const undo = useGraphStore((state) => state.undo);
   const redo = useGraphStore((state) => state.redo);
@@ -53,7 +44,6 @@ function Editor() {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      // Leave text fields to the browser's own undo stack.
       if (isEditingText(event.target)) return;
       if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "z") return;
 
@@ -71,14 +61,7 @@ function Editor() {
   return (
     <div className="flex h-full flex-1 flex-col">
       <header className="flex items-center gap-3 border-b border-zinc-200 px-4 py-2 dark:border-zinc-800">
-        <button
-          type="button"
-          onClick={clearProvider}
-          className="rounded-md px-2 py-1 text-sm text-zinc-600 transition hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-        >
-          &larr; Provider
-        </button>
-        <span className="text-sm font-medium">{getProvider(providerId).displayName}</span>
+        <ProviderSwitcher />
         <span className="text-xs text-zinc-500">
           {nodeCount} {nodeCount === 1 ? "resource" : "resources"}
         </span>

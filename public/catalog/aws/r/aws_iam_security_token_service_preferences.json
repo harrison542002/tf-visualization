@@ -1,0 +1,1 @@
+{"type":"aws_iam_security_token_service_preferences","displayName":"Security Token Service Preferences","category":"iam","description":"","fields":[{"key":"global_endpoint_token_version","label":"Global Endpoint Token Version","type":"string","required":true},{"key":"id","label":"ID","type":"string","required":false}],"slots":[]}

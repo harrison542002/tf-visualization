@@ -1,0 +1,1 @@
+{"type":"aws_cloudfront_origin_access_identity","displayName":"Origin Access Identity","category":"iam","description":"","fields":[{"key":"comment","label":"Comment","type":"string","required":false},{"key":"id","label":"ID","type":"string","required":false}],"slots":[]}

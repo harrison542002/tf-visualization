@@ -1,0 +1,1 @@
+{"type":"aws_waf_regex_pattern_set","displayName":"Regex Pattern Set","category":"project","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"name","label":"Name","type":"string","required":true},{"key":"regex_pattern_strings","label":"Regex Pattern Strings","type":"stringList","required":false}],"slots":[]}

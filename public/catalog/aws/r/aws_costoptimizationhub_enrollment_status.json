@@ -1,0 +1,1 @@
+{"type":"aws_costoptimizationhub_enrollment_status","displayName":"Enrollment Status","category":"project","description":"","fields":[{"key":"include_member_accounts","label":"Include Member Accounts","type":"bool","required":false}],"slots":[]}

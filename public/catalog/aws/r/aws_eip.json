@@ -1,0 +1,1 @@
+{"type":"aws_eip","displayName":"Elastic IP","category":"network","description":"Static public IPv4 address.","fields":[{"key":"domain","label":"Domain","type":"string","required":false,"defaultValue":"vpc"}],"slots":[]}

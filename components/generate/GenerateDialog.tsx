@@ -65,11 +65,11 @@ export function GenerateDialog({ onClose }: GenerateDialogProps) {
       role="dialog"
       aria-modal="true"
       aria-label="Generated Terraform"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-6"
+      className="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-6"
       onClick={onClose}
     >
       <div
-        className="flex max-h-full w-full max-w-3xl flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-800 dark:bg-zinc-950"
+        className="animate-pop-in flex max-h-full w-full max-w-3xl flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-800 dark:bg-zinc-950"
         onClick={(event) => event.stopPropagation()}
       >
         <header className="flex items-center justify-between border-b border-zinc-200 px-5 py-3 dark:border-zinc-800">

@@ -1,0 +1,1 @@
+{"type":"aws_route53recoverycontrolconfig_control_panel","displayName":"Control Panel","category":"network","description":"","fields":[{"key":"cluster_arn","label":"Cluster Arn","type":"string","required":true},{"key":"id","label":"ID","type":"string","required":false},{"key":"name","label":"Name","type":"string","required":true}],"slots":[]}

@@ -1,0 +1,1 @@
+{"type":"google_access_context_manager_access_policy_iam_policy","displayName":"Context Manager Access Policy IAM Policy","category":"iam","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"name","label":"Name","type":"string","required":true},{"key":"policy_data","label":"Policy Data","type":"string","required":true}],"slots":[]}

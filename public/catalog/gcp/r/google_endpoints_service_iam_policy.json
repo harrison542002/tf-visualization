@@ -1,0 +1,1 @@
+{"type":"google_endpoints_service_iam_policy","displayName":"Service IAM Policy","category":"network","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"policy_data","label":"Policy Data","type":"string","required":true},{"key":"service_name","label":"Service Name","type":"string","required":true}],"slots":[]}

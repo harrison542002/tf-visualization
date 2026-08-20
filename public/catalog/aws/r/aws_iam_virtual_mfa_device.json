@@ -1,0 +1,1 @@
+{"type":"aws_iam_virtual_mfa_device","displayName":"Virtual Mfa Device","category":"iam","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"path","label":"Path","type":"string","required":false},{"key":"virtual_mfa_device_name","label":"Virtual Mfa Device Name","type":"string","required":true}],"slots":[]}

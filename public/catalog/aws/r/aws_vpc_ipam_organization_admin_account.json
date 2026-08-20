@@ -1,0 +1,1 @@
+{"type":"aws_vpc_ipam_organization_admin_account","displayName":"Ipam Organization Admin Account","category":"project","description":"","fields":[{"key":"delegated_admin_account_id","label":"Delegated Admin Account ID","type":"string","required":true},{"key":"id","label":"ID","type":"string","required":false}],"slots":[]}

@@ -1,0 +1,1 @@
+{"type":"azurerm_resource_group","displayName":"Resource Group","category":"project","description":"Container that everything else belongs to.","fields":[{"key":"name","label":"Name","type":"string","required":true,"placeholder":"my-app-rg"},{"key":"location","label":"Location","type":"string","required":true,"defaultValue":"westeurope"}],"slots":[]}

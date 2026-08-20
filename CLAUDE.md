@@ -9,10 +9,13 @@ Read `CONTRIBUTING.md` before adding a resource or provider — it has the worke
 ## Commands
 
 ```bash
-npm test            # vitest run
-npm run typecheck   # tsc --noEmit
-npm run lint        # eslint
-npm run dev         # dev server on :3000
+npm test
+npm run codegen
+npm run codegen:diff
+npm run codegen:catalog
+npm run typecheck  
+npm run lint       
+npm run dev        
 ```
 
 Run all three of the first commands before considering a change done.
@@ -24,6 +27,7 @@ lib/providers/   catalog data: what resources exist, their fields and slots; pal
 lib/graph/       canvas state (zustand), connection rules, auto-layout, PNG export
 lib/terraform/   ir.ts -> compile.ts -> hcl.ts | json.ts
 lib/theme/       colour theme preference
+codegen/         provider schema -> ResourceSchema; overrides/ is the curation layer
 components/      UI, generated from the catalog
 ```
 
@@ -64,24 +68,3 @@ validates the whole catalog, so new schemas get baseline coverage for free.
 Serializer tests assert exact output strings, including `=` alignment, because matching
 `terraform fmt` is a feature. Do not loosen them to fragment matching when they fail — check
 whether the formatting change was intended first.
-
-## Gotchas
-
-- React Flow requires `"use client"` and `@xyflow/react/dist/style.css`.
-- **The canvas needs an unbroken definite-height chain from `<html>` down.** `app/layout.tsx`
-  uses `h-full` on both `html` and `body`; switching `body` to `min-h-full` makes its height
-  `auto`, every percentage and `flex-1` below it indefinite, and collapses the canvas to zero
-  with React Flow warning #004. The symptom is a blank canvas area, not an exception.
-- Node data must satisfy `Record<string, unknown>` for React Flow's generics; hence the index
-  signature on `ResourceNodeData`.
-- Controlled inputs backed by parsed values (the `stringList` field) keep their raw text in
-  local state. Deriving the text from the parsed array eats the separator as it is typed. See
-  `StringListInput` in `components/panel/FieldInput.tsx`.
-- **PNG export needs *measured* nodes.** Use `getNodesBounds` from the `useReactFlow` hook,
-  never the bare import — only the hook form sees measured dimensions. Unmeasured nodes give a
-  zero-area box, `getViewportForBounds` then returns a NaN zoom, and a NaN transform makes
-  `html-to-image` hang rather than throw. `exportImage.ts` rejects such bounds up front.
-- Font embedding is switched off for the export (`skipFonts`). Inlining the 17 `@font-face`
-  rules this app loads dominates the export; text falls back down the same font stack.
-- `npm audit` reports issues in Next's own transitive `postcss` and `sharp`. The only offered
-  fix downgrades Next to 9.3.3; leave them.

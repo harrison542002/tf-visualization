@@ -1,0 +1,1 @@
+{"type":"aws_route_table","displayName":"Route Table","category":"network","description":"Routing rules for subnets in a VPC.","fields":[],"slots":[{"id":"vpc_id","label":"VPC","targetType":"aws_vpc","targetAttribute":"id","cardinality":"one","required":true}]}

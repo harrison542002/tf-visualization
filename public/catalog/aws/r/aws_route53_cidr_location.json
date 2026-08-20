@@ -1,0 +1,1 @@
+{"type":"aws_route53_cidr_location","displayName":"Cidr Location","category":"network","description":"","fields":[{"key":"cidr_blocks","label":"Cidr Blocks","type":"stringList","required":true},{"key":"cidr_collection_id","label":"Cidr Collection ID","type":"string","required":true},{"key":"name","label":"Name","type":"string","required":true}],"slots":[]}

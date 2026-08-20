@@ -1,0 +1,1 @@
+{"type":"google_folder_iam_policy","displayName":"IAM Policy","category":"iam","description":"","fields":[{"key":"folder","label":"Folder","type":"string","required":true},{"key":"id","label":"ID","type":"string","required":false},{"key":"policy_data","label":"Policy Data","type":"string","required":true}],"slots":[]}

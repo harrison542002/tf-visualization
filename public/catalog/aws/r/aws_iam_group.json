@@ -1,0 +1,1 @@
+{"type":"aws_iam_group","displayName":"Group","category":"iam","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"name","label":"Name","type":"string","required":true},{"key":"path","label":"Path","type":"string","required":false}],"slots":[]}

@@ -1,0 +1,1 @@
+{"type":"aws_backup_global_settings","displayName":"Global Settings","category":"storage","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false}],"slots":[]}

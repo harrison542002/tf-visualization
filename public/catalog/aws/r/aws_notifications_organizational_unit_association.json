@@ -1,0 +1,1 @@
+{"type":"aws_notifications_organizational_unit_association","displayName":"Organizational Unit Association","category":"project","description":"","fields":[{"key":"notification_configuration_arn","label":"Notification Configuration Arn","type":"string","required":true},{"key":"organizational_unit_id","label":"Organizational Unit ID","type":"string","required":true}],"slots":[]}

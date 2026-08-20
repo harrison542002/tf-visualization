@@ -1,0 +1,1 @@
+{"type":"google_kms_crypto_key_iam_policy","displayName":"Crypto Key IAM Policy","category":"iam","description":"","fields":[{"key":"crypto_key_id","label":"Crypto Key ID","type":"string","required":true},{"key":"id","label":"ID","type":"string","required":false},{"key":"policy_data","label":"Policy Data","type":"string","required":true}],"slots":[]}

@@ -1,0 +1,1 @@
+{"type":"aws_iam_group_membership","displayName":"Group Membership","category":"iam","description":"","fields":[{"key":"group","label":"Group","type":"string","required":true},{"key":"id","label":"ID","type":"string","required":false},{"key":"name","label":"Name","type":"string","required":true},{"key":"users","label":"Users","type":"stringList","required":true}],"slots":[]}

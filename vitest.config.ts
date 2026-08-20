@@ -3,7 +3,6 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   plugins: [react()],
-  // Resolves the `@/*` alias from tsconfig.json, so tests import the same way app code does.
   resolve: { tsconfigPaths: true },
   test: {
     environment: "jsdom",

@@ -1,34 +1,23 @@
 /**
  * Central lookup for provider catalogs.
  *
- * AWS and Azure are listed with `available: false` so the wizard can show them as coming soon
- * rather than pretending they do not exist. Implementing one means writing its resource
- * schemas and flipping the flag — no changes to the canvas, compiler or serializers.
+ * Every provider is a bundle of `ResourceSchema` data. GCP is hand-written; AWS and Azure are
+ * generated from their provider schemas by `npm run codegen` and curated through
+ * `codegen/overrides/`. Adding a provider touches nothing in the canvas, compiler or
+ * serializers.
  */
 
+import { awsProvider } from "./aws";
+import { getCachedSchema, primeCache } from "./catalog";
+import { azureProvider } from "./azure";
 import { gcpProvider } from "./gcp";
 import type { ProviderDefinition, ProviderId, ResourceSchema } from "./types";
 
-const comingSoon = (
-  id: ProviderId,
-  displayName: string,
-  terraformName: string,
-  source: string,
-): ProviderDefinition => ({
-  id,
-  displayName,
-  terraformName,
-  available: false,
-  requirement: { source, version: "~> 1.0" },
-  providerFields: [],
-  resources: [],
-});
+export const providers: readonly ProviderDefinition[] = [gcpProvider, awsProvider, azureProvider];
 
-export const providers: readonly ProviderDefinition[] = [
-  gcpProvider,
-  comingSoon("aws", "Amazon Web Services", "aws", "hashicorp/aws"),
-  comingSoon("azure", "Microsoft Azure", "azurerm", "hashicorp/azurerm"),
-];
+// Tier-1 resources are bundled, so seed the cache with them: they must never cost a fetch,
+// and this keeps one lookup path for bundled and lazily-loaded resources alike.
+for (const provider of providers) primeCache(provider.id, provider.resources);
 
 export function getProvider(id: ProviderId): ProviderDefinition {
   const provider = providers.find((candidate) => candidate.id === id);
@@ -38,12 +27,17 @@ export function getProvider(id: ProviderId): ProviderDefinition {
   return provider;
 }
 
-/** Returns the schema for a resource type, or `undefined` if the provider does not define it. */
+/**
+ * Returns the schema for a resource type, or `undefined` if it is neither bundled nor loaded.
+ *
+ * Synchronous by design. The store awaits `loadResourceSchema` before creating a node, so
+ * every resource on the canvas is already cached by the time anything renders or compiles.
+ */
 export function findResourceSchema(
   providerId: ProviderId,
   resourceType: string,
 ): ResourceSchema | undefined {
-  return getProvider(providerId).resources.find((schema) => schema.type === resourceType);
+  return getCachedSchema(providerId, resourceType);
 }
 
 /** Same as {@link findResourceSchema}, but throws — for call sites where absence is a bug. */

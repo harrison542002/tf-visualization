@@ -1,0 +1,1 @@
+{"type":"google_kms_key_ring_iam_policy","displayName":"Key Ring IAM Policy","category":"iam","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"key_ring_id","label":"Key Ring ID","type":"string","required":true},{"key":"policy_data","label":"Policy Data","type":"string","required":true}],"slots":[]}

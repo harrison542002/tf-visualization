@@ -1,0 +1,1 @@
+{"type":"aws_iam_organizations_features","displayName":"Organizations Features","category":"iam","description":"","fields":[{"key":"enabled_features","label":"Enabled Features","type":"stringList","required":true}],"slots":[]}

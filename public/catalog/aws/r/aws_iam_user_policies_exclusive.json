@@ -1,0 +1,1 @@
+{"type":"aws_iam_user_policies_exclusive","displayName":"User Policies Exclusive","category":"iam","description":"","fields":[{"key":"policy_names","label":"Policy Names","type":"stringList","required":true},{"key":"user_name","label":"User Name","type":"string","required":true}],"slots":[]}

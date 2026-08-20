@@ -1,0 +1,1 @@
+{"type":"aws_internet_gateway","displayName":"Internet Gateway","category":"network","description":"Gives a VPC access to the internet.","fields":[],"slots":[{"id":"vpc_id","label":"VPC","targetType":"aws_vpc","targetAttribute":"id","cardinality":"one","required":true}]}

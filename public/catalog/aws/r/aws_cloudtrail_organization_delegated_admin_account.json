@@ -1,0 +1,1 @@
+{"type":"aws_cloudtrail_organization_delegated_admin_account","displayName":"Organization Delegated Admin Account","category":"project","description":"","fields":[{"key":"account_id","label":"Account ID","type":"string","required":true}],"slots":[]}

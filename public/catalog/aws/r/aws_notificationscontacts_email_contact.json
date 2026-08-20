@@ -1,0 +1,1 @@
+{"type":"aws_notificationscontacts_email_contact","displayName":"Email Contact","category":"project","description":"","fields":[{"key":"email_address","label":"Email Address","type":"string","required":true},{"key":"name","label":"Name","type":"string","required":true}],"slots":[]}

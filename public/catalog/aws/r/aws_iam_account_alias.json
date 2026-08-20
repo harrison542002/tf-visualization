@@ -1,0 +1,1 @@
+{"type":"aws_iam_account_alias","displayName":"Account Alias","category":"iam","description":"","fields":[{"key":"account_alias","label":"Account Alias","type":"string","required":true},{"key":"id","label":"ID","type":"string","required":false}],"slots":[]}

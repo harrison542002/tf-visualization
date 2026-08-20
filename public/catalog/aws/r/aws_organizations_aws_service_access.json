@@ -1,0 +1,1 @@
+{"type":"aws_organizations_aws_service_access","displayName":"Aws Service Access","category":"project","description":"","fields":[{"key":"service_principal","label":"Service Principal","type":"string","required":true}],"slots":[]}

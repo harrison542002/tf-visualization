@@ -15,7 +15,10 @@ resource "google_compute_subnetwork" "web" {
 }
 ```
 
-Google Cloud is implemented. AWS and Azure are listed in the picker and are next up.
+Google Cloud, AWS and Azure are all implemented, with **4083 resources** between them —
+every one generated from the provider's own Terraform schema. A curated set per provider is
+bundled and connectable; the rest are searchable and fetched on demand. See
+[CONTRIBUTING.md](CONTRIBUTING.md#adding-a-resource).
 
 ## Editor
 
@@ -89,4 +92,11 @@ the most useful first contribution, and usually a data-only change.
 
 ## Licence
 
-Not yet chosen. A licence must be added before this is published publicly.
+MIT
+
+## Trademarks
+
+The provider cards show each cloud's own logo, inlined in
+[components/wizard/ProviderIcon.tsx](components/wizard/ProviderIcon.tsx). Those marks belong to
+Google, Amazon and Microsoft respectively and are reproduced unaltered only to identify the
+provider each card selects. This project is not affiliated with or endorsed by any of them.

@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { useGraphStore } from "@/lib/graph/store";
+import { providers } from "@/lib/providers/registry";
 import { ProviderStep } from "./ProviderStep";
 
 beforeEach(() => {
@@ -24,17 +25,25 @@ describe("ProviderStep", () => {
     expect(screen.getByRole("button", { name: /Microsoft Azure/ })).toBeInTheDocument();
   });
 
-  it("disables providers that are not implemented yet", () => {
+  it("enables every implemented provider", () => {
     render(<ProviderStep />);
 
     expect(screen.getByRole("button", { name: /Google Cloud/ })).toBeEnabled();
-    expect(screen.getByRole("button", { name: /Amazon Web Services/ })).toBeDisabled();
-    expect(screen.getByRole("button", { name: /Microsoft Azure/ })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /Amazon Web Services/ })).toBeEnabled();
+    expect(screen.getByRole("button", { name: /Microsoft Azure/ })).toBeEnabled();
   });
 
-  it("shows how many resources an available provider offers", () => {
+  it("counts the whole catalog, not just the bundled tier-1 resources", () => {
     render(<ProviderStep />);
-    expect(screen.getByText(/\d+ resources/)).toBeInTheDocument();
+
+    for (const provider of providers) {
+      // `resources` holds only the handful bundled in the JavaScript; the rest of the catalog
+      // is fetched on demand, and the card has to speak for all of it.
+      expect(provider.catalogSize).toBeGreaterThan(provider.resources.length);
+      expect(
+        screen.getByText(`${provider.catalogSize.toLocaleString("en-US")} resources`),
+      ).toBeInTheDocument();
+    }
   });
 
   it("selects the provider and seeds its default settings", async () => {
@@ -49,12 +58,14 @@ describe("ProviderStep", () => {
     expect(state.providerSettings["region"]).toBe("us-central1");
   });
 
-  it("does nothing when a coming-soon provider is clicked", async () => {
+  it("selects AWS, whose catalog is generated rather than hand-written", async () => {
     const user = userEvent.setup();
     render(<ProviderStep />);
 
     await user.click(screen.getByRole("button", { name: /Amazon Web Services/ }));
 
-    expect(useGraphStore.getState().providerId).toBeNull();
+    const awsState = useGraphStore.getState();
+    expect(awsState.providerId).toBe("aws");
+    expect(awsState.providerSettings["region"]).toBe("us-east-1");
   });
 });

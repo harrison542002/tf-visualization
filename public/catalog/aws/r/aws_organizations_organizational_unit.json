@@ -1,0 +1,1 @@
+{"type":"aws_organizations_organizational_unit","displayName":"Organizational Unit","category":"project","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"name","label":"Name","type":"string","required":true},{"key":"parent_id","label":"Parent ID","type":"string","required":true}],"slots":[]}

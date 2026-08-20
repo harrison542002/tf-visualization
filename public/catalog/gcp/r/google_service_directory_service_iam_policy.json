@@ -1,0 +1,1 @@
+{"type":"google_service_directory_service_iam_policy","displayName":"Directory Service IAM Policy","category":"iam","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"name","label":"Name","type":"string","required":true},{"key":"policy_data","label":"Policy Data","type":"string","required":true}],"slots":[]}

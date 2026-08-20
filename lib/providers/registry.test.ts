@@ -6,6 +6,9 @@
  * the declared options without having to write a test for their new file.
  */
 
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { describe, expect, it } from "vitest";
 
 import { findResourceSchema, getProvider, getResourceSchema, providers } from "./registry";
@@ -31,10 +34,10 @@ describe("registry lookups", () => {
     expect(() => getResourceSchema("gcp", "google_nonexistent")).toThrow(/Unknown resource type/);
   });
 
-  it("lists gcp as available and aws and azure as coming soon", () => {
+  it("lists every provider as available", () => {
     expect(getProvider("gcp").available).toBe(true);
-    expect(getProvider("aws").available).toBe(false);
-    expect(getProvider("azure").available).toBe(false);
+    expect(getProvider("aws").available).toBe(true);
+    expect(getProvider("azure").available).toBe(true);
   });
 });
 
@@ -133,12 +136,29 @@ describe("catalog integrity", () => {
         }
       });
 
-      it("marks required fields on every resource so output is never half-formed", () => {
+      it("reports a catalog size matching the catalog it ships", () => {
+        // `catalogSize` is generated, but by a different command than the one that writes
+        // `public/catalog/`, so nothing but this stops the two from drifting apart. The
+        // provider picker shows the number before any of the catalog has been fetched.
+        const indexPath = join(process.cwd(), "public", "catalog", providerId, "index.json");
+        const manifest = JSON.parse(readFileSync(indexPath, "utf8")) as {
+          entries: readonly unknown[];
+        };
+
+        expect(provider.catalogSize).toBe(manifest.entries.length);
+        // The bundled tier-1 set is a subset of the catalog, never the whole of it.
+        expect(provider.catalogSize).toBeGreaterThanOrEqual(provider.resources.length);
+      });
+
+      it("gives every resource something to edit or connect", () => {
+        // Deliberately weaker than "must have a required field": aws_internet_gateway has
+        // no required attributes at all, only a required vpc_id connection, and aws_eip
+        // has neither. A resource exposing nothing at all would still be a bug.
         for (const resource of provider.resources) {
           expect(
-            resource.fields.some((field) => field.required),
-            `${resource.type} has no required fields`,
-          ).toBe(true);
+            resource.fields.length + resource.slots.length,
+            `${resource.type} exposes neither fields nor slots`,
+          ).toBeGreaterThan(0);
         }
       });
     },

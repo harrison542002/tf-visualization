@@ -1,0 +1,1 @@
+{"type":"aws_route53_query_log","displayName":"Query Log","category":"network","description":"","fields":[{"key":"cloudwatch_log_group_arn","label":"Cloudwatch Log Group Arn","type":"string","required":true},{"key":"id","label":"ID","type":"string","required":false},{"key":"zone_id","label":"Zone ID","type":"string","required":true}],"slots":[]}

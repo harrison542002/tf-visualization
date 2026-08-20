@@ -1,0 +1,1 @@
+{"type":"aws_organizations_resource_policy","displayName":"Resource Policy","category":"iam","description":"","fields":[{"key":"content","label":"Content","type":"string","required":true},{"key":"id","label":"ID","type":"string","required":false}],"slots":[]}

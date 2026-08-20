@@ -1,0 +1,1 @@
+{"type":"aws_iam_user_policy_attachment","displayName":"User Policy Attachment","category":"iam","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"policy_arn","label":"Policy Arn","type":"string","required":true},{"key":"user","label":"User","type":"string","required":true}],"slots":[]}

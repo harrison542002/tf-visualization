@@ -19,7 +19,8 @@ import {
 } from "@xyflow/react";
 import { create } from "zustand";
 
-import { getProvider, getResourceSchema } from "@/lib/providers/registry";
+import { loadResourceSchema } from "@/lib/providers/catalog";
+import { getProvider } from "@/lib/providers/registry";
 import type { FieldValue, FieldValues, ProviderId } from "@/lib/providers/types";
 import { uniqueLocalName } from "@/lib/terraform/identifiers";
 import { isConnectionAllowed } from "./connection";
@@ -55,10 +56,17 @@ export interface GraphState extends GraphSnapshot {
   readonly historyTag: string | null;
 
   readonly selectProvider: (providerId: ProviderId) => void;
-  readonly clearProvider: () => void;
   readonly setProviderSetting: (key: string, value: FieldValue) => void;
 
-  readonly addResource: (resourceType: string, position: XYPosition) => void;
+  /**
+   * Adds a resource, fetching its schema first when it is not one of the bundled tier-1 set.
+   *
+   * Async so the node is only created once the schema is cached — every synchronous consumer
+   * downstream (node renderer, panel, compiler) can then assume it is there.
+   */
+  readonly addResource: (resourceType: string, position: XYPosition) => Promise<void>;
+  /** Resource types currently being fetched, so the palette can show progress. */
+  readonly loadingTypes: readonly string[];
   readonly duplicateNode: (nodeId: string) => void;
   readonly removeNode: (nodeId: string) => void;
   readonly removeEdge: (edgeId: string) => void;
@@ -116,6 +124,7 @@ export const useGraphStore = create<GraphState>((set, get) => ({
   nodes: [],
   edges: [],
   selectedNodeId: null,
+  loadingTypes: [],
   past: [],
   future: [],
   historyTag: null,
@@ -127,18 +136,7 @@ export const useGraphStore = create<GraphState>((set, get) => ({
       nodes: [],
       edges: [],
       selectedNodeId: null,
-      past: [],
-      future: [],
-      historyTag: null,
-    }),
-
-  clearProvider: () =>
-    set({
-      providerId: null,
-      providerSettings: {},
-      nodes: [],
-      edges: [],
-      selectedNodeId: null,
+      loadingTypes: [],
       past: [],
       future: [],
       historyTag: null,
@@ -150,11 +148,25 @@ export const useGraphStore = create<GraphState>((set, get) => ({
       providerSettings: { ...state.providerSettings, [key]: value },
     })),
 
-  addResource: (resourceType, position) => {
-    const state = get();
-    if (!state.providerId) return;
+  addResource: async (resourceType, position) => {
+    const providerId = get().providerId;
+    if (!providerId) return;
 
-    const schema = getResourceSchema(state.providerId, resourceType);
+    set((state) => ({ loadingTypes: [...state.loadingTypes, resourceType] }));
+    let schema;
+    try {
+      schema = await loadResourceSchema(providerId, resourceType);
+    } finally {
+      set((state) => ({
+        loadingTypes: state.loadingTypes.filter((entry) => entry !== resourceType),
+      }));
+    }
+    if (!schema) return;
+
+    // Re-read: the fetch above yielded, so the graph may have moved on.
+    const state = get();
+    if (state.providerId !== providerId) return;
+
     // Terraform names must be unique per type, so only same-type names are contended.
     const taken = state.nodes
       .filter((node) => node.data.resourceType === resourceType)
@@ -173,7 +185,6 @@ export const useGraphStore = create<GraphState>((set, get) => ({
 
     set({ ...commit(state), nodes: [...state.nodes, node], selectedNodeId: node.id });
   },
-
   duplicateNode: (nodeId) => {
     const state = get();
     const source = state.nodes.find((node) => node.id === nodeId);

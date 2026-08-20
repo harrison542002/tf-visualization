@@ -1,0 +1,1 @@
+{"type":"google_healthcare_hl7_v2_store_iam_policy","displayName":"Hl7 V2 Store IAM Policy","category":"iam","description":"","fields":[{"key":"hl7_v2_store_id","label":"Hl7 V2 Store ID","type":"string","required":true},{"key":"id","label":"ID","type":"string","required":false},{"key":"policy_data","label":"Policy Data","type":"string","required":true}],"slots":[]}

@@ -1,0 +1,1 @@
+{"type":"aws_iam_role_policy_attachment","displayName":"Role Policy Attachment","category":"iam","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"policy_arn","label":"Policy Arn","type":"string","required":true},{"key":"role","label":"Role","type":"string","required":true}],"slots":[]}

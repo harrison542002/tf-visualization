@@ -47,7 +47,7 @@ export function ContextMenu({ x, y, items, onClose }: ContextMenuProps) {
         left: Math.min(x, typeof window === "undefined" ? x : window.innerWidth - 200),
         top: Math.min(y, typeof window === "undefined" ? y : window.innerHeight - 200),
       }}
-      className="fixed z-50 min-w-44 rounded-lg border border-zinc-200 bg-white p-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900"
+      className="animate-pop-in fixed z-50 min-w-44 rounded-lg border border-zinc-200 bg-white p-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900"
     >
       {items.map((item) => (
         <div key={item.label}>

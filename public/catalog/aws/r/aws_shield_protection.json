@@ -1,0 +1,1 @@
+{"type":"aws_shield_protection","displayName":"Protection","category":"project","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"name","label":"Name","type":"string","required":true},{"key":"resource_arn","label":"Resource Arn","type":"string","required":true}],"slots":[]}

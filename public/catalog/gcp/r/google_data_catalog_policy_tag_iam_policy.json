@@ -1,0 +1,1 @@
+{"type":"google_data_catalog_policy_tag_iam_policy","displayName":"Catalog Policy Tag IAM Policy","category":"iam","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"policy_data","label":"Policy Data","type":"string","required":true},{"key":"policy_tag","label":"Policy Tag","type":"string","required":true}],"slots":[]}

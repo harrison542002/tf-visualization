@@ -1,0 +1,1 @@
+{"type":"google_iap_web_iam_policy","displayName":"Web IAM Policy","category":"iam","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"policy_data","label":"Policy Data","type":"string","required":true},{"key":"project","label":"Project","type":"string","required":false}],"slots":[]}

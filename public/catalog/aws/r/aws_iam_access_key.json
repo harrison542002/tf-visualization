@@ -1,0 +1,1 @@
+{"type":"aws_iam_access_key","displayName":"Access Key","category":"iam","description":"","fields":[{"key":"id","label":"ID","type":"string","required":false},{"key":"pgp_key","label":"Pgp Key","type":"string","required":false},{"key":"status","label":"Status","type":"string","required":false},{"key":"user","label":"User","type":"string","required":true}],"slots":[]}

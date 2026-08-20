@@ -13,12 +13,35 @@ export type ProviderId = "gcp" | "aws" | "azure";
 
 export type ResourceCategory = "network" | "compute" | "storage" | "iam" | "project";
 
-export type FieldType = "string" | "number" | "bool" | "enum" | "stringList";
+export type FieldType =
+  | "string"
+  | "number"
+  | "bool"
+  | "enum"
+  | "stringList"
+  /** A nested Terraform block, e.g. `network_interface { ... }`. Children live in `fields`. */
+  | "block";
 
-/** A value as held in a node's config — the user-editable side of a resource. */
-export type FieldValue = string | number | boolean | readonly string[];
+/**
+ * A value as held in a node's config — the user-editable side of a resource.
+ *
+ * The recursive cases carry nested blocks: a `single` block holds one {@link FieldValues},
+ * a `list`/`set` block holds one per repetition.
+ */
+export type FieldValue =
+  | string
+  | number
+  | boolean
+  | readonly string[]
+  | FieldValues
+  | readonly FieldValues[];
 
-export type FieldValues = Readonly<Record<string, FieldValue>>;
+export interface FieldValues {
+  readonly [key: string]: FieldValue | undefined;
+}
+
+/** How Terraform repeats a nested block. Mirrors `block_types.nesting_mode` in provider schemas. */
+export type BlockNesting = "single" | "list" | "set" | "map";
 
 /**
  * One editable property of a resource. The property panel renders itself entirely from these,
@@ -36,6 +59,13 @@ export interface FieldSchema {
   readonly placeholder?: string;
   /** Short hint shown under the input. */
   readonly help?: string;
+
+  /** Children of a `block` field. Ignored for every other type. */
+  readonly fields?: readonly FieldSchema[];
+  /** Repetition of a `block` field. Defaults to `single`. */
+  readonly nesting?: BlockNesting;
+  /** Upper bound on repetitions, from the provider schema. */
+  readonly maxItems?: number;
 }
 
 /**
@@ -57,6 +87,14 @@ export interface ConnectionSlot {
   readonly targetAttribute: string;
   readonly cardinality: "one" | "many";
   readonly required: boolean;
+  /**
+   * Nested block the reference is written into, as a path of `block` field keys.
+   *
+   * `["network_interface"]` puts the reference inside `network_interface { ... }` rather than
+   * at the top level. Omitted means top level. This is what lets a slot land inside a nested
+   * block without the resource needing a `build` override.
+   */
+  readonly path?: readonly string[];
 }
 
 /** Reads a node's field values with the schema's declared type applied. */
@@ -115,5 +153,18 @@ export interface ProviderDefinition {
   readonly requirement: { readonly source: string; readonly version: string };
   /** Provider-level settings such as project and region. */
   readonly providerFields: readonly FieldSchema[];
+  /**
+   * The bundled tier-1 resources — a curated subset, not the whole catalog. Everything else is
+   * fetched from `public/catalog/` on demand, so use {@link catalogSize} when reporting how much
+   * a provider offers.
+   */
   readonly resources: readonly ResourceSchema[];
+  /**
+   * How many resources the provider's full catalog holds, tier 1 included.
+   *
+   * Generated next to `resources` rather than counted at runtime, because the provider picker
+   * has to show it before any catalog has been fetched. `registry.test.ts` checks it against
+   * `public/catalog/<id>/index.json` so the two cannot drift apart.
+   */
+  readonly catalogSize: number;
 }

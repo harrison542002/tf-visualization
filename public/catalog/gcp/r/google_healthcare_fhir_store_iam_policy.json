@@ -1,0 +1,1 @@
+{"type":"google_healthcare_fhir_store_iam_policy","displayName":"Fhir Store IAM Policy","category":"iam","description":"","fields":[{"key":"fhir_store_id","label":"Fhir Store ID","type":"string","required":true},{"key":"id","label":"ID","type":"string","required":false},{"key":"policy_data","label":"Policy Data","type":"string","required":true}],"slots":[]}

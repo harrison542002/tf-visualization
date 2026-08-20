@@ -1,0 +1,1 @@
+{"type":"aws_iam_group_policy_attachments_exclusive","displayName":"Group Policy Attachments Exclusive","category":"iam","description":"","fields":[{"key":"group_name","label":"Group Name","type":"string","required":true},{"key":"policy_arns","label":"Policy Arns","type":"stringList","required":true}],"slots":[]}
