@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { useGraphStore, type ResourceNode } from "@/lib/graph/store";
-import { ProviderSwitcher } from "./ProviderSwitcher";
+import { ProviderSwitcher } from "@/components/wizard/ProviderSwitcher";
 
 const node = (id: string): ResourceNode => ({
   id,

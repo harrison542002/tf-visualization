@@ -1,7 +1,7 @@
 "use client";
 
 import { useReactFlow } from "@xyflow/react";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 import { downloadGraphPng, ExportUnavailableError } from "@/lib/graph/exportImage";
 import { useGraphStore } from "@/lib/graph/store";
@@ -32,7 +32,7 @@ export function useExportPng(): ExportPngController {
   const [isExporting, setIsExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const exportPng = useCallback(() => {
+  const exportPng = () => {
     if (nodes.length === 0) {
       setError("Add a resource before exporting.");
       return;
@@ -55,9 +55,9 @@ export function useExportPng(): ExportPngController {
         console.error("PNG export failed", cause);
       })
       .finally(() => setIsExporting(false));
-  }, [getNodesBounds, nodes, theme]);
+  };
 
-  const dismissError = useCallback(() => setError(null), []);
+  const dismissError = () => setError(null);
 
   return { exportPng, isExporting, error, dismissError };
 }

@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import type { CompileEdge, CompileNode } from "@/lib/graph/types";
 import type { FieldValues } from "@/lib/providers/types";
-import { compileGraph, type CompileInput, type CompileResult, type DiagnosticCode } from "./compile";
-import { serializeHcl } from "./hcl";
+import { compileGraph, type CompileInput, type CompileResult, type DiagnosticCode } from "@/lib/terraform/compile";
+import { serializeHcl } from "@/lib/terraform/hcl";
 
 const node = (
   id: string,

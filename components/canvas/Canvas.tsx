@@ -10,15 +10,14 @@ import {
   type NodeTypes,
   type XYPosition,
 } from "@xyflow/react";
-import { useCallback, useMemo, useState, type DragEvent, type MouseEvent } from "react";
-
+import { useState, type DragEvent, type MouseEvent } from "react";
 import { useGraphStore, type ResourceNode } from "@/lib/graph/store";
 import { useThemeStore } from "@/lib/theme/store";
 import { ContextMenu, type ContextMenuItem } from "./ContextMenu";
 import { RESOURCE_DRAG_TYPE } from "./Palette";
 import { ResourceNode as ResourceNodeComponent } from "./ResourceNode";
 import { ResourceSearch } from "./ResourceSearch";
-import { useExportPng } from "./useExportPng";
+import { useExportPng } from "@/hooks/useExportPng";
 
 import "@xyflow/react/dist/style.css";
 
@@ -59,35 +58,31 @@ export function Canvas() {
   /** Flow coordinates the search should drop its result at, or null when it is closed. */
   const [searchAt, setSearchAt] = useState<XYPosition | null>(null);
 
-  const onDragOver = useCallback((event: DragEvent) => {
+  const onDragOver = (event: DragEvent) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
-  }, []);
+  };
 
-  const onDrop = useCallback(
-    (event: DragEvent) => {
-      event.preventDefault();
-      const resourceType = event.dataTransfer.getData(RESOURCE_DRAG_TYPE);
-      if (!resourceType) return;
+  const onDrop = (event: DragEvent) => {
+    event.preventDefault();
+    const resourceType = event.dataTransfer.getData(RESOURCE_DRAG_TYPE);
+    if (!resourceType) return;
 
-      // Drop coordinates are in screen space; the canvas may be panned or zoomed.
-      // The node appears once its schema has loaded; the palette shows progress meanwhile.
-      void addResource(
-        resourceType,
-        screenToFlowPosition({ x: event.clientX, y: event.clientY }),
-      );
-    },
-    [addResource, screenToFlowPosition],
-  );
+    // Drop coordinates are in screen space; the canvas may be panned or zoomed.
+    // The node appears once its schema has loaded; the palette shows progress meanwhile.
+    void addResource(resourceType, screenToFlowPosition({ x: event.clientX, y: event.clientY }));
+  };
 
-  const openMenu = useCallback((event: MouseEvent, target: MenuTarget) => {
+  const openMenu = (event: MouseEvent, target: MenuTarget) => {
     event.preventDefault();
     setMenu({ x: event.clientX, y: event.clientY, target });
-  }, []);
+  };
 
-  const closeMenu = useCallback(() => setMenu(null), []);
+  const closeMenu = () => setMenu(null);
 
-  const menuItems = useMemo((): readonly ContextMenuItem[] => {
+  // Built inline rather than memoised: React Compiler caches this, and the switch has to see
+  // the menu that is open right now.
+  const menuItems = ((): readonly ContextMenuItem[] => {
     if (!menu) return [];
 
     switch (menu.target.kind) {
@@ -127,22 +122,11 @@ export function Canvas() {
         ];
       }
     }
-  }, [
-    menu,
-    duplicateNode,
-    removeNode,
-    removeEdge,
-    autoLayout,
-    fitView,
-    exportPng,
-    clearGraph,
-    screenToFlowPosition,
-    nodes.length,
-  ]);
+  })();
 
   // React Flow mutates neither array, but its props are not readonly.
-  const flowNodes = useMemo(() => [...nodes], [nodes]);
-  const flowEdges = useMemo(() => [...edges], [edges]);
+  const flowNodes = [...nodes];
+  const flowEdges = [...edges];
 
   return (
     <div className="h-full flex-1" onDragOver={onDragOver} onDrop={onDrop}>

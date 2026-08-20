@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { useGraphStore } from "./store";
+import { useGraphStore } from "@/lib/graph/store";
 
 const reset = () =>
   useGraphStore.setState({

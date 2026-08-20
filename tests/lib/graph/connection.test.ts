@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { isConnectionAllowed } from "./connection";
-import type { CompileEdge, CompileNode } from "./types";
+import { isConnectionAllowed } from "@/lib/graph/connection";
+import type { CompileEdge, CompileNode } from "@/lib/graph/types";
 
 const node = (id: string, resourceType: string, localName: string): CompileNode => ({
   id,

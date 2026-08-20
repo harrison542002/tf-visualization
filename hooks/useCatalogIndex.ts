@@ -23,8 +23,8 @@ const NO_ENTRIES: readonly CatalogIndexEntry[] = [];
 /**
  * Curated schemas carry more than an index row; this narrows them to the searchable shape.
  *
- * Cached per provider because the result is a dependency of the callers' `useMemo`: a fresh
- * array on every render would re-run every search.
+ * Cached per provider so the array is referentially stable: it feeds the callers' search,
+ * and a fresh array on every render would defeat the compiler's memoisation of it.
  */
 const curatedEntries = new Map<ProviderId, readonly CatalogIndexEntry[]>();
 

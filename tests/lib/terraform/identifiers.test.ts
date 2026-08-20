@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { isValidLocalName, sanitizeLocalName, uniqueLocalName } from "./identifiers";
+import { isValidLocalName, sanitizeLocalName, uniqueLocalName } from "@/lib/terraform/identifiers";
 
 describe("isValidLocalName", () => {
   it.each(["main", "_private", "web-1", "a", "web_server_2"])("accepts %s", (name) => {

@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useGraphStore } from "@/lib/graph/store";
 import { resetCatalogCache } from "@/lib/providers/catalog";
-import { Palette } from "./Palette";
+import { Palette } from "@/components/canvas/Palette";
 
 /** Leaves the palette on its curated fallback; the real index is megabytes. */
 const stubIndexUnavailable = () => {

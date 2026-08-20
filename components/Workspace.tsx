@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 import { Canvas } from "@/components/canvas/Canvas";
 import { Palette } from "@/components/canvas/Palette";
-import { useExportPng } from "@/components/canvas/useExportPng";
+import { useExportPng } from "@/hooks/useExportPng";
 import { GenerateDialog } from "@/components/generate/GenerateDialog";
 import { PropertiesPanel } from "@/components/panel/PropertiesPanel";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";

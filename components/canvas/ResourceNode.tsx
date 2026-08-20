@@ -1,7 +1,6 @@
 "use client";
 
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import { memo } from "react";
 
 import { useGraphStore, type ResourceNode as ResourceNodeType } from "@/lib/graph/store";
 import { findResourceSchema } from "@/lib/providers/registry";
@@ -14,7 +13,7 @@ import { CATEGORY_STYLES } from "./categoryStyles";
  * source handle for the resources that reference this one. Adding a resource type to the
  * catalog gives it a node here with no changes to this file.
  */
-function ResourceNodeComponent({ data, selected }: NodeProps<ResourceNodeType>) {
+export function ResourceNode({ data, selected }: NodeProps<ResourceNodeType>) {
   // The canvas only ever holds one provider's resources, so the schema is looked up from the
   // active provider rather than duplicated into every node's data.
   const providerId = useGraphStore((state) => state.providerId);
@@ -76,5 +75,3 @@ function ResourceNodeComponent({ data, selected }: NodeProps<ResourceNodeType>) 
     </div>
   );
 }
-
-export const ResourceNode = memo(ResourceNodeComponent);

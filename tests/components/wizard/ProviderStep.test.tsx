@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { useGraphStore } from "@/lib/graph/store";
 import { providers } from "@/lib/providers/registry";
-import { ProviderStep } from "./ProviderStep";
+import { ProviderStep } from "@/components/wizard/ProviderStep";
 
 beforeEach(() => {
   useGraphStore.setState({

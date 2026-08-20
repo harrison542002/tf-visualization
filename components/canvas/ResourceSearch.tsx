@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useGraphStore } from "@/lib/graph/store";
 import { searchResources } from "@/lib/providers/search";
-import { useCatalogIndex } from "./useCatalogIndex";
+import { useCatalogIndex } from "@/hooks/useCatalogIndex";
 
 /** Cap on rendered rows. The list is keyboard-driven, so a long tail helps nobody. */
 const MAX_RESULTS = 40;
@@ -30,10 +30,7 @@ export function ResourceSearch({ onSelect, onClose }: ResourceSearchProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const activeRef = useRef<HTMLButtonElement>(null);
 
-  const results = useMemo(
-    () => searchResources(entries, query).slice(0, MAX_RESULTS),
-    [entries, query],
-  );
+  const results = searchResources(entries, query).slice(0, MAX_RESULTS);
 
   // Clamped rather than reset: the list also shrinks when the full index arrives mid-typing,
   // and a highlight past the end would leave Enter with nothing to add.

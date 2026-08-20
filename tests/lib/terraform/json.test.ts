@@ -11,8 +11,8 @@ import {
   tfString,
   tfStringList,
   type TfDocument,
-} from "./ir";
-import { escapeJsonTemplate, serializeJson, toJsonDocument } from "./json";
+} from "@/lib/terraform/ir";
+import { escapeJsonTemplate, serializeJson, toJsonDocument } from "@/lib/terraform/json";
 
 const emptyDocument: TfDocument = {
   requiredProviders: [],

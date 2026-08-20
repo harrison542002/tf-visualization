@@ -4,7 +4,7 @@ import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 
 import type { FieldSchema, FieldValue } from "@/lib/providers/types";
-import { FieldInput } from "./FieldInput";
+import { FieldInput } from "@/components/panel/FieldInput";
 
 const field = (overrides: Partial<FieldSchema> & Pick<FieldSchema, "type">): FieldSchema => ({
   key: "example",

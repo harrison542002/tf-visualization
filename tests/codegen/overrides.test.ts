@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import type { FieldSchema, ResourceSchema } from "@/lib/providers/types";
-import { emitResourceModule } from "./emit";
-import { applyOverrides, type ProviderOverrides } from "./overrides";
-import { awsOverrides } from "./overrides/aws";
-import { azureOverrides } from "./overrides/azure";
+import { emitResourceModule } from "@/codegen/emit";
+import { applyOverrides, type ProviderOverrides } from "@/codegen/overrides";
+import { awsOverrides } from "@/codegen/overrides/aws";
+import { azureOverrides } from "@/codegen/overrides/azure";
 
 /** Stands in for conversion output: fields present, slots always empty. */
 const generated: readonly ResourceSchema[] = [

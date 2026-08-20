@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import { useGraphStore } from "@/lib/graph/store";
 import { compileGraph } from "@/lib/terraform/compile";
@@ -32,15 +32,15 @@ export function GenerateDialog({ onClose }: GenerateDialogProps) {
   const [format, setFormat] = useState<OutputFormat>("hcl");
   const [copied, setCopied] = useState(false);
 
-  const result = useMemo(() => {
-    if (!providerId) return undefined;
-    return compileGraph({ providerId, providerSettings, nodes, edges });
-  }, [providerId, providerSettings, nodes, edges]);
+  const result = providerId
+    ? compileGraph({ providerId, providerSettings, nodes, edges })
+    : undefined;
 
-  const output = useMemo(() => {
-    if (!result?.ok) return "";
-    return format === "hcl" ? serializeHcl(result.document) : serializeJson(result.document);
-  }, [result, format]);
+  const output = !result?.ok
+    ? ""
+    : format === "hcl"
+      ? serializeHcl(result.document)
+      : serializeJson(result.document);
 
   const activeFormat = FORMATS[format];
 

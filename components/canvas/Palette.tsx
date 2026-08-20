@@ -1,13 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import { useGraphStore } from "@/lib/graph/store";
 import { getProvider } from "@/lib/providers/registry";
 import { searchResources } from "@/lib/providers/search";
 import type { ResourceCategory, ResourceSchema } from "@/lib/providers/types";
 import { CATEGORY_ORDER, CATEGORY_STYLES } from "./categoryStyles";
-import { useCatalogIndex } from "./useCatalogIndex";
+import { useCatalogIndex } from "@/hooks/useCatalogIndex";
 
 /** Key the drag payload travels under. Read by the canvas in `onDrop`. */
 export const RESOURCE_DRAG_TYPE = "application/tf-visualization-resource";
@@ -18,7 +18,7 @@ const MAX_RESULTS = 60;
 /** Ties the collapse buttons to the region they show and hide. */
 const PANEL_ID = "resource-palette";
 
-/** Stable empty, so `?? []` does not hand a fresh array to useMemo on every render. */
+/** Stable empty, so an absent provider does not hand a fresh array to the compiler's cache. */
 const NO_RESOURCES: readonly ResourceSchema[] = [];
 
 /**
@@ -41,20 +41,14 @@ export function Palette() {
   const provider = providerId ? getProvider(providerId) : undefined;
   const curated = provider?.resources ?? NO_RESOURCES;
 
-  const results = useMemo(
-    () => (query.trim() ? searchResources(entries, query) : []),
-    [query, entries],
-  );
+  const results = query.trim() ? searchResources(entries, query) : [];
 
-  const grouped = useMemo(() => {
-    const byCategory = new Map<ResourceCategory, typeof curated>();
-    for (const resource of curated) {
-      const existing = byCategory.get(resource.category);
-      if (existing) byCategory.set(resource.category, [...existing, resource]);
-      else byCategory.set(resource.category, [resource]);
-    }
-    return byCategory;
-  }, [curated]);
+  const grouped = new Map<ResourceCategory, typeof curated>();
+  for (const resource of curated) {
+    const existing = grouped.get(resource.category);
+    if (existing) grouped.set(resource.category, [...existing, resource]);
+    else grouped.set(resource.category, [resource]);
+  }
 
   if (!provider) return null;
   const searching = query.trim().length > 0;

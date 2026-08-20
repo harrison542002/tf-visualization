@@ -11,8 +11,8 @@ import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { findResourceSchema, getProvider, getResourceSchema, providers } from "./registry";
-import type { FieldSchema, ProviderDefinition } from "./types";
+import { findResourceSchema, getProvider, getResourceSchema, providers } from "@/lib/providers/registry";
+import type { FieldSchema, ProviderDefinition } from "@/lib/providers/types";
 
 const implemented = providers.filter((provider) => provider.available);
 

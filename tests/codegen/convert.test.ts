@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 
 import type { FieldSchema, ResourceSchema } from "@/lib/providers/types";
-import { convertProviderSchema } from "./convert";
-import { decodeCty, describeCty } from "./cty";
-import { diffCatalogs, flattenFields } from "./diff";
-import { emitResourceModule } from "./emit";
-import { recoverEnumOptions } from "./enums";
-import { fixtureSchema } from "./fixtures/provider-schema";
-import { categoryFor, displayNameFor, labelFor } from "./naming";
+import { convertProviderSchema } from "@/codegen/convert";
+import { decodeCty, describeCty } from "@/codegen/cty";
+import { diffCatalogs, flattenFields } from "@/codegen/diff";
+import { emitResourceModule } from "@/codegen/emit";
+import { recoverEnumOptions } from "@/codegen/enums";
+import { fixtureSchema } from "@/codegen/fixtures/provider-schema";
+import { categoryFor, displayNameFor, labelFor } from "@/codegen/naming";
 
 const converted = convertProviderSchema(fixtureSchema, { providerPrefix: "google_" });
 

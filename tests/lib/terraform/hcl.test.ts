@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { escapeHclString, serializeHcl } from "./hcl";
+import { escapeHclString, serializeHcl } from "@/lib/terraform/hcl";
 import {
   attr,
   nestedBlock,
@@ -12,7 +12,7 @@ import {
   tfString,
   tfStringList,
   type TfDocument,
-} from "./ir";
+} from "@/lib/terraform/ir";
 
 const emptyDocument: TfDocument = {
   requiredProviders: [],

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { gcpProvider } from "./gcp";
-import { filterResources } from "./search";
+import { gcpProvider } from "@/lib/providers/gcp";
+import { filterResources } from "@/lib/providers/search";
 
 const resources = gcpProvider.resources;
 const typesFor = (query: string) =>

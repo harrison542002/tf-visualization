@@ -6,8 +6,8 @@ import {
   loadResourceSchema,
   primeCache,
   resetCatalogCache,
-} from "./catalog";
-import type { ResourceSchema } from "./types";
+} from "@/lib/providers/catalog";
+import type { ResourceSchema } from "@/lib/providers/types";
 
 const schema = (type: string): ResourceSchema => ({
   type,

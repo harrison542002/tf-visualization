@@ -18,7 +18,8 @@ lib/
   terraform/              IR, compiler and serializers
 ```
 
-Tests live beside the code they cover as `*.test.ts` / `*.test.tsx`.
+Tests live under `tests/`, mirroring the source tree: `lib/terraform/hcl.ts` is covered by
+`tests/lib/terraform/hcl.test.ts`. They import through the `@/` alias, never a relative path.
 
 Before opening a pull request:
 
@@ -107,12 +108,12 @@ Reach for this only when the flat mapping cannot express the resource. `computeI
 
 ### 4. Tests
 
-`lib/providers/registry.test.ts` runs structural checks over every resource automatically —
+`tests/lib/providers/registry.test.ts` runs structural checks over every resource automatically —
 dangling slot targets, enum defaults that are not in `options`, duplicate keys, defaults whose
 type does not match the field. A new schema is covered by those the moment it is registered.
 
 Write a test of your own when you add a `build` override, asserting the generated HCL. See the
-`compileGraph with build overrides` block in `lib/terraform/compile.test.ts`.
+`compileGraph with build overrides` block in `tests/lib/terraform/compile.test.ts`.
 
 ## Adding a provider
 

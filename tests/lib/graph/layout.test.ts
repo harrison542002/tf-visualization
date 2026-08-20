@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { layeredPositions, type LayoutNode } from "./layout";
+import { layeredPositions, type LayoutNode } from "@/lib/graph/layout";
 
 const node = (id: string, x = 0, y = 0): LayoutNode => ({ id, position: { x, y } });
 

@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useGraphStore } from "@/lib/graph/store";
 import { resetCatalogCache } from "@/lib/providers/catalog";
-import { ResourceSearch } from "./ResourceSearch";
+import { ResourceSearch } from "@/components/canvas/ResourceSearch";
 
 /**
  * The index fetch is stubbed to fail, which leaves the search on its curated fallback: a real
