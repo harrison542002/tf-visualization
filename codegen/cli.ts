@@ -118,6 +118,14 @@ function main(): void {
     console.log(`  schema read as      : ${loaded.encoding}, ${(loaded.bytes / 1024 / 1024).toFixed(1)} MB`);
     printStats(result.stats);
     console.log(`  resources written   : ${emitted.total} (${emitted.curated} curated)`);
+    if (emitted.inference) {
+      const { resourcesWithSlots, slotsInferred, topTargets } = emitted.inference;
+      const share = Math.round((resourcesWithSlots / emitted.total) * 100);
+      console.log(`  connectable         : ${resourcesWithSlots} (${share}%), ${slotsInferred} slots inferred`);
+      for (const [target, count] of topTargets.slice(0, 5)) {
+        console.log(`      ${String(count).padStart(4)}  -> ${target}`);
+      }
+    }
     console.log(`  index.json          : ${(emitted.indexBytes / 1024).toFixed(0)} KB`);
     console.log(`  resource files      : ${(emitted.resourceBytes / 1024 / 1024).toFixed(1)} MB total, ` +
       `${(emitted.resourceBytes / emitted.total / 1024).toFixed(1)} KB average

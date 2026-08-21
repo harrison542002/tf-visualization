@@ -26,7 +26,7 @@ same three on every push and pull request, so a red pipeline means one of them w
 ```
 lib/providers/   catalog data: what resources exist, their fields and slots; palette search
 lib/graph/       canvas state (zustand), connection rules, auto-layout, PNG export
-lib/terraform/   ir.ts -> compile.ts -> hcl.ts | json.ts
+lib/terraform/   ir.ts -> compile.ts -> hcl.ts | json.ts; parse.ts reads HCL back in
 lib/theme/       colour theme preference
 codegen/         provider schema -> ResourceSchema; overrides/ is the curation layer
 components/      UI, generated from the catalog

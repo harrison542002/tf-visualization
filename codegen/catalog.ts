@@ -14,6 +14,7 @@ import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import type { ResourceSchema } from "@/lib/providers/types";
+import { inferProviderConnections, RULES_BY_PROVIDER, type InferenceStats } from "./infer";
 import { applyOverrides, type ProviderOverrides } from "./overrides";
 
 /** One palette-sized row. Deliberately tiny: this file holds every resource a provider has. */
@@ -24,6 +25,8 @@ export interface CatalogIndexEntry {
   readonly description: string;
   /** True when the resource has curated connections, so the palette can mark it. */
   readonly curated: boolean;
+  /** Number of connection points, curated or inferred. Zero means it cannot be wired. */
+  readonly slots: number;
 }
 
 export interface CatalogManifest {
@@ -41,6 +44,7 @@ export interface EmitCatalogOptions {
 }
 
 export interface EmitCatalogResult {
+  readonly inference?: InferenceStats;
   readonly total: number;
   readonly curated: number;
   readonly indexBytes: number;
@@ -73,7 +77,10 @@ export function emitCatalog(
   converted: readonly ResourceSchema[],
   options: EmitCatalogOptions,
 ): EmitCatalogResult {
-  const { resources, curatedTypes } = mergeCurated(converted, options.overrides);
+  // Inference first, so curated overrides sit on top of it rather than being overwritten.
+  const rules = RULES_BY_PROVIDER[options.providerId];
+  const inferred = rules ? inferProviderConnections(converted, rules) : undefined;
+  const { resources, curatedTypes } = mergeCurated(inferred?.resources ?? converted, options.overrides);
 
   const providerDir = join(options.outDir, options.providerId);
   const resourceDir = join(providerDir, "r");
@@ -96,6 +103,7 @@ export function emitCatalog(
       category: resource.category,
       description: resource.description,
       curated: curatedTypes.has(resource.type),
+      slots: resource.slots.length,
     });
   }
 
@@ -109,6 +117,7 @@ export function emitCatalog(
   writeFileSync(join(providerDir, "index.json"), indexBody);
 
   return {
+    ...(inferred ? { inference: inferred.stats } : {}),
     total: entries.length,
     curated: curatedTypes.size,
     indexBytes: indexBody.length,

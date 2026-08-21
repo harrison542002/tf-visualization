@@ -88,6 +88,15 @@ export interface ConnectionSlot {
   readonly cardinality: "one" | "many";
   readonly required: boolean;
   /**
+   * Terraform attribute the reference is written to, when it differs from {@link id}.
+   *
+   * Ids must be unique within a resource so React Flow can address each handle, but the same
+   * attribute name legitimately appears in two different blocks — a Cloud Run service has
+   * both `build_config.service_account` and `template.service_account`. The colliding slot
+   * takes a path-qualified id and keeps the real attribute name here.
+   */
+  readonly attribute?: string;
+  /**
    * Nested block the reference is written into, as a path of `block` field keys.
    *
    * `["network_interface"]` puts the reference inside `network_interface { ... }` rather than

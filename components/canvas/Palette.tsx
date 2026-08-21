@@ -149,6 +149,7 @@ export function Palette() {
                       displayName={entry.displayName}
                       description={entry.description}
                       curated={entry.curated}
+                      slots={entry.slots}
                       loading={loadingTypes.includes(entry.type)}
                     />
                   </li>
@@ -173,6 +174,7 @@ export function Palette() {
                         displayName={resource.displayName}
                         description={resource.description}
                         curated
+                        slots={resource.slots.length}
                         loading={loadingTypes.includes(resource.type)}
                       />
                     </li>
@@ -211,12 +213,13 @@ interface ResourceCardProps {
   readonly type: string;
   readonly displayName: string;
   readonly description: string;
-  /** Curated resources have connections; the rest are fields only until someone curates them. */
   readonly curated: boolean;
+  /** Connection points. Zero means the resource can only ever stand alone. */
+  readonly slots: number;
   readonly loading: boolean;
 }
 
-function ResourceCard({ type, displayName, description, curated, loading }: ResourceCardProps) {
+function ResourceCard({ type, displayName, description, curated, slots, loading }: ResourceCardProps) {
   return (
     <div
       draggable
@@ -229,12 +232,12 @@ function ResourceCard({ type, displayName, description, curated, loading }: Reso
     >
       <p className="flex items-center gap-1.5 font-medium">
         <span className="truncate">{displayName}</span>
-        {curated && (
+        {slots > 0 && (
           <span
-            title="Has connection points"
+            title={`${slots} connection point${slots === 1 ? "" : "s"}${curated ? ", hand-curated" : ""}`}
             className="shrink-0 rounded bg-emerald-100 px-1 text-[10px] font-medium text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
           >
-            linkable
+            {slots}
           </span>
         )}
         {loading && <span className="shrink-0 text-[10px] text-zinc-400">loading…</span>}

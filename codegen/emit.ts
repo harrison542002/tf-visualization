@@ -79,6 +79,9 @@ function renderSlot(slot: ConnectionSlot, depth: number): string {
     `${inner}cardinality: ${quote(slot.cardinality)},`,
     `${inner}required: ${slot.required},`,
   ];
+  if (slot.attribute !== undefined) {
+    lines.push(`${inner}attribute: ${quote(slot.attribute)},`);
+  }
   if (slot.path !== undefined) {
     lines.push(`${inner}path: ${renderStringArray(slot.path, depth + 1)},`);
   }
@@ -142,8 +145,6 @@ export function emitResourceModule(
     : `// \`slots\` is empty on every resource: provider schemas carry no reference information,
 // so connections cannot be derived from them. They are added by the curation pass.`;
 
-  // The bundled array is only part of the catalog for a curated run, so the total is emitted
-  // beside it: the provider picker needs the real figure before any catalog has been fetched.
   const catalogSizeSource =
     options.catalogSize === undefined
       ? ""

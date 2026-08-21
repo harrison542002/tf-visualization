@@ -20,8 +20,26 @@ every one generated from the provider's own Terraform schema. A curated set per 
 bundled and connectable; the rest are searchable and fetched on demand. See
 [CONTRIBUTING.md](CONTRIBUTING.md#adding-a-resource).
 
+## Connections
+
+Joining two nodes writes a real Terraform reference. Around half the catalog is wired up:
+
+| Provider | Connectable resources | Connection points |
+| -------- | --------------------: | ----------------: |
+| google   |          463 of 1315  |               626 |
+| aws      |          630 of 1695  |               978 |
+| azurerm  |          880 of 1073  |             1 411 |
+
+These come from naming conventions — `aws_subnet.vpc_id`, `azurerm_subnet.resource_group_name`,
+`google_compute_subnetwork.network` — validated against the provider’s own resource list, with
+hand-curated definitions taking precedence. Attributes that accept either a literal or a
+reference keep both: type a value, or wire it up and the connection wins.
+
 ## Editor
 
+- **Import** existing Terraform — paste it or drop a `.tf` / `.tf.json` file, and the graph
+  is rebuilt from it, references included. Anything that could not be mapped is listed
+  before you commit to it
 - **Search** the palette by display name, Terraform type, description or category
 - **Undo and redo** with `Ctrl`/`Cmd`+`Z` and `Ctrl`/`Cmd`+`Shift`+`Z`; a run of edits to one
   field collapses into a single step

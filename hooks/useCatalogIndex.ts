@@ -38,6 +38,7 @@ function asEntries(providerId: ProviderId): readonly CatalogIndexEntry[] {
     category: resource.category,
     description: resource.description,
     curated: true,
+    slots: resource.slots.length,
   }));
   curatedEntries.set(providerId, entries);
   return entries;

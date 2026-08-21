@@ -86,9 +86,14 @@ describe("catalog integrity", () => {
           expect(new Set(slotIds).size, `duplicate slot id in ${resource.type}`).toBe(
             slotIds.length,
           );
-          // Both become attribute keys, so a collision would silently drop one.
-          const overlap = fieldKeys.filter((key) => slotIds.includes(key));
-          expect(overlap, `${resource.type} has a field and slot sharing a key`).toEqual([]);
+          for (const slot of resource.slots) {
+            const field = resource.fields.find((entry) => entry.key === slot.id);
+            if (!field) continue;
+            expect(
+              ["string", "stringList"],
+              `${resource.type}.${slot.id} shares a key with a ${field.type} field`,
+            ).toContain(field.type);
+          }
         }
       });
 

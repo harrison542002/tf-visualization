@@ -265,9 +265,22 @@ function buildBlockFrom(
   const blocks: TfNestedBlock[] = [];
   let substantive = false;
 
+  // Many reference attributes accept either a literal or a reference, so a field and a slot
+  // can share a key. A live connection is the more specific intent and wins; the literal is
+  // the fallback when nothing is wired up.
+  const connectedAtPath = new Set(
+    scope.schema.slots
+      .filter(
+        (slot) =>
+          samePath(slot.path ?? [], path) && (scope.connections.get(slot.id)?.length ?? 0) > 0,
+      )
+      .map((slot) => slot.attribute ?? slot.id),
+  );
+
   // Attributes first, so they precede nested blocks in the rendered output.
   for (const field of fields) {
     if (field.type === "block") continue;
+    if (connectedAtPath.has(field.key)) continue;
 
     const raw = values[field.key];
     const value = effectiveValue(field, raw);
@@ -307,11 +320,12 @@ function buildBlockFrom(
     if (refs.length === 0) continue;
 
     substantive = true;
+    const key = slot.attribute ?? slot.id;
     if (slot.cardinality === "many") {
-      attributes.push(attr(slot.id, tfList(refs)));
+      attributes.push(attr(key, tfList(refs)));
     } else {
       const [first] = refs;
-      if (first) attributes.push(attr(slot.id, first));
+      if (first) attributes.push(attr(key, first));
     }
   }
 

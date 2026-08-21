@@ -24,6 +24,8 @@ export interface CatalogIndexEntry {
   readonly description: string;
   /** Has hand-curated connections. The palette surfaces these first. */
   readonly curated: boolean;
+  /** Connection points, curated or inferred. Zero means the resource cannot be wired up. */
+  readonly slots: number;
 }
 
 interface CatalogManifest {

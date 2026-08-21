@@ -172,7 +172,9 @@ export function applyOverrides(
       ...(override.category ? { category: override.category } : {}),
       ...(override.description ? { description: override.description } : {}),
       fields,
-      slots: override.slots ?? [],
+      // Falls back to whatever inference produced, so curating a resource’s fields does not
+      // silently strip the connections it already had.
+      slots: override.slots ?? base.slots,
     });
   }
 

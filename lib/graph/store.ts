@@ -74,6 +74,16 @@ export interface GraphState extends GraphSnapshot {
   readonly renameNode: (nodeId: string, localName: string) => void;
   readonly setNodeField: (nodeId: string, key: string, value: FieldValue) => void;
 
+  /**
+   * Replaces the graph with an imported one.
+   *
+   * Undoable like any other mutation, so an import that turns out wrong is one Ctrl+Z away.
+   */
+  readonly replaceGraph: (input: {
+    nodes: readonly ResourceNode[];
+    edges: readonly Edge[];
+    providerSettings?: FieldValues;
+  }) => void;
   readonly clearGraph: () => void;
   readonly autoLayout: () => void;
 
@@ -244,6 +254,16 @@ export const useGraphStore = create<GraphState>((set, get) => ({
           ? { ...node, data: { ...node.data, fields: { ...node.data.fields, [key]: value } } }
           : node,
       ),
+    })),
+
+  replaceGraph: ({ nodes, edges, providerSettings }) =>
+    set((state) => ({
+      ...commit(state),
+      nodes,
+      edges,
+      // Merged, not replaced: an imported file rarely carries every provider setting.
+      providerSettings: { ...state.providerSettings, ...providerSettings },
+      selectedNodeId: null,
     })),
 
   clearGraph: () =>

@@ -36,6 +36,12 @@ export const gcpOverrides: ProviderOverrides = {
     "google_storage_bucket",
     "google_service_account",
     "google_project_service",
+    // Serverless app tier: Cloud Run in front of Cloud SQL.
+    "google_cloud_run_v2_service",
+    "google_sql_database_instance",
+    "google_sql_database",
+    "google_sql_user",
+    "google_project_iam_member",
   ],
 
   resources: {
@@ -247,6 +253,159 @@ export const gcpOverrides: ProviderOverrides = {
         account_id: {
           placeholder: "web-runner",
           help: "6 to 30 lowercase letters, digits and hyphens. Becomes the email prefix.",
+        },
+      },
+    },
+
+    /**
+     * Cloud Run service.
+     *
+     * The Cloud SQL link is the one connection no naming rule could reach: the attribute is
+     * `template.volumes.cloud_sql_instance.instances`, a generic plural that resolves to no
+     * resource type, and it wants the instance's `connection_name` rather than its id.
+     */
+    google_cloud_run_v2_service: {
+      displayName: "Cloud Run Service",
+      category: "compute",
+      description: "Serverless container service.",
+      keepFields: [
+        "name",
+        "location",
+        "ingress",
+        "deletion_protection",
+        "template",
+        "template.containers",
+        "template.containers.image",
+        "template.containers.env",
+        "template.containers.env.name",
+        "template.containers.env.value",
+        "template.volumes",
+        "template.volumes.name",
+        // The block itself must be kept even though its only content is a slot: the builder
+        // can only write a reference into a block the schema actually declares.
+        "template.volumes.cloud_sql_instance",
+      ],
+      fields: {
+        name: { required: true, placeholder: "api" },
+        location: { required: true, defaultValue: "us-central1" },
+        deletion_protection: { defaultValue: false },
+        "template.containers.image": {
+          required: true,
+          defaultValue: "us-docker.pkg.dev/cloudrun/container/hello",
+        },
+        "template.containers.env.name": { placeholder: "DB_HOST" },
+      },
+      slots: [
+        {
+          id: "service_account",
+          label: "Service account",
+          targetType: "google_service_account",
+          targetAttribute: "email",
+          cardinality: "one",
+          required: false,
+          path: ["template"],
+        },
+        {
+          // Cloud Run mounts the socket by connection name, not by id.
+          id: "cloud_sql_instances",
+          attribute: "instances",
+          label: "Cloud SQL instance",
+          targetType: "google_sql_database_instance",
+          targetAttribute: "connection_name",
+          cardinality: "many",
+          required: false,
+          path: ["template", "volumes", "cloud_sql_instance"],
+        },
+      ],
+    },
+
+    google_sql_database_instance: {
+      displayName: "Cloud SQL Instance",
+      category: "storage",
+      description: "Managed PostgreSQL, MySQL or SQL Server.",
+      keepFields: ["name", "database_version", "region", "deletion_protection", "settings", "settings.tier"],
+      fields: {
+        name: { required: true, placeholder: "app-db" },
+        database_version: {
+          required: true,
+          defaultValue: "POSTGRES_15",
+          options: ["POSTGRES_15", "POSTGRES_14", "MYSQL_8_0", "SQLSERVER_2019_STANDARD"],
+        },
+        region: { required: true, defaultValue: "us-central1" },
+        // Off by default so a canvas experiment can be torn down again.
+        deletion_protection: { defaultValue: false },
+        "settings.tier": { required: true, defaultValue: "db-f1-micro" },
+      },
+    },
+
+    google_sql_database: {
+      displayName: "SQL Database",
+      category: "storage",
+      description: "A database inside a Cloud SQL instance.",
+      keepFields: ["name"],
+      fields: { name: { required: true, placeholder: "app" } },
+      slots: [
+        {
+          // `instance` is scoped to the sql product, so it cannot resolve mechanically to
+          // google_sql_database_instance.
+          id: "instance",
+          label: "Cloud SQL instance",
+          targetType: "google_sql_database_instance",
+          targetAttribute: "name",
+          cardinality: "one",
+          required: true,
+        },
+      ],
+    },
+
+    google_sql_user: {
+      displayName: "SQL User",
+      category: "iam",
+      description: "Database credentials.",
+      keepFields: ["name", "password"],
+      fields: {
+        name: { required: true, placeholder: "app" },
+        password: { help: "Prefer a Secret Manager reference over a literal." },
+      },
+      slots: [
+        {
+          id: "instance",
+          label: "Cloud SQL instance",
+          targetType: "google_sql_database_instance",
+          targetAttribute: "name",
+          cardinality: "one",
+          required: true,
+        },
+      ],
+    },
+
+    /**
+     * Project-level IAM binding.
+     *
+     * `member` takes a prefixed principal (`serviceAccount:<email>`), which a bare reference
+     * cannot express, so it stays a text field rather than becoming a slot.
+     */
+    google_project_iam_member: {
+      displayName: "IAM Binding",
+      category: "iam",
+      description: "Grants a role to a principal on the project.",
+      // `project` is a required argument here, not just a provider default.
+      keepFields: ["project", "role", "member"],
+      fields: {
+        project: { required: true, placeholder: "my-project-id" },
+        role: {
+          required: true,
+          defaultValue: "roles/cloudsql.client",
+          options: [
+            "roles/cloudsql.client",
+            "roles/run.invoker",
+            "roles/storage.objectViewer",
+            "roles/secretmanager.secretAccessor",
+          ],
+        },
+        member: {
+          required: true,
+          placeholder: "serviceAccount:app@project.iam.gserviceaccount.com",
         },
       },
     },

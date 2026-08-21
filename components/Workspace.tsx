@@ -7,6 +7,7 @@ import { Canvas } from "@/components/canvas/Canvas";
 import { Palette } from "@/components/canvas/Palette";
 import { useExportPng } from "@/hooks/useExportPng";
 import { GenerateDialog } from "@/components/generate/GenerateDialog";
+import { ImportDialog } from "@/components/generate/ImportDialog";
 import { PropertiesPanel } from "@/components/panel/PropertiesPanel";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { ProviderStep } from "@/components/wizard/ProviderStep";
@@ -41,6 +42,7 @@ function Editor() {
 
   const { exportPng, isExporting, error, dismissError } = useExportPng();
   const [showGenerate, setShowGenerate] = useState(false);
+  const [showImport, setShowImport] = useState(false);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -92,6 +94,13 @@ function Editor() {
           <ThemeToggle />
           <button
             type="button"
+            onClick={() => setShowImport(true)}
+            className="rounded-md border border-zinc-200 px-2.5 py-1.5 text-sm font-medium transition hover:bg-zinc-100 dark:border-zinc-800 dark:hover:bg-zinc-800"
+          >
+            Import
+          </button>
+          <button
+            type="button"
             onClick={exportPng}
             disabled={nodeCount === 0 || isExporting}
             className="rounded-md border border-zinc-200 px-2.5 py-1.5 text-sm font-medium transition enabled:hover:bg-zinc-100 disabled:opacity-40 dark:border-zinc-800 dark:enabled:hover:bg-zinc-800"
@@ -116,6 +125,7 @@ function Editor() {
       </div>
 
       {showGenerate && <GenerateDialog onClose={() => setShowGenerate(false)} />}
+      {showImport && <ImportDialog onClose={() => setShowImport(false)} />}
     </div>
   );
 }
